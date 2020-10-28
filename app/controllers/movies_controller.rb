@@ -7,9 +7,14 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @ratings_to_show = params[:ratings] || []
-    puts @ratings_to_show
-    @sort_by = params[:sort_by]
+    if params[:home] == '1'
+      @ratings_to_show = params[:ratings]  || []
+      @sort_by = params[:sort_by]
+    else
+      @ratings_to_show = session[:ratings]  || []
+      @sort_by = session[:sort_by]
+    end
+
     @movies = Movie.all
     @movies = @movies.with_ratings(@ratings_to_show) unless @ratings_to_show.empty?
     case @sort_by
@@ -19,6 +24,10 @@ class MoviesController < ApplicationController
       @movies = @movies.order release_date: :desc
     end
     @all_ratings = Movie.all_ratings
+
+    # add filter to cookies so then can remember last filter without query params
+    session[:ratings] = @ratings_to_show
+    session[:sort_by] = @sort_by
   end
 
   def new
