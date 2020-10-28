@@ -7,18 +7,19 @@
   <% @all_ratings.each do |rating| %>
     <div class="form-check  form-check-inline">
       <%= label_tag "ratings[#{rating}]", rating, class: 'form-check-label' %>
-      <%= check_box_tag "ratings[#{rating}]", "1",  @ratings_to_show.include?(rating), class: 'form-check-input', id: "ratings_#{rating}" %>
+      <%= check_box_tag "ratings[]", rating,  @ratings_to_show.include?(rating), class: 'form-check-input', id: "ratings_#{rating}" %>
     </div>
   <% end %>
+  <input type="hidden" id="sort_by" name="sort_by" value="<%=@sort_by%>" />
   <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>
 <% end %>
 
 <table class="table table-striped col-md-12" id="movies">
   <thead>
     <tr>
-      <th>Movie Title</th>
+      <th><%= link_to 'Movie Title', movies_path(ratings: @ratings_to_show, sort_by: :title), id: :title_header%></th>
       <th>Rating</th>
-      <th>Release Date</th>
+      <th><%= link_to 'Release Date', movies_path(ratings: @ratings_to_show, sort_by: :release_date), id: :release_date_header%></th>
       <th>More Info</th>
     </tr>
   </thead>
@@ -42,3 +43,9 @@
   </tbody>
 </table>
 <%= link_to 'Add new movie', new_movie_path, :class => 'btn btn-primary' %>
+<script type="text/javascript">
+  let sortByParams = document.getElementById('sort_by').value;
+  let elem= document.getElementById(sortByParams+'_header')
+  console.log(sortByParams+'_header')
+  if(elem){elem.parentElement.classList.add('bg-warning', 'hilite','text-primary')}
+</script>

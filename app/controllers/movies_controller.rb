@@ -7,9 +7,17 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @ratings_to_show = params[:ratings].try(:keys) || []
+    @ratings_to_show = params[:ratings] || []
+    puts @ratings_to_show
+    @sort_by = params[:sort_by]
     @movies = Movie.all
     @movies = @movies.with_ratings(@ratings_to_show) unless @ratings_to_show.empty?
+    case @sort_by
+    when 'title'
+      @movies = @movies.order title: :asc
+    when 'release_date'
+      @movies = @movies.order release_date: :desc
+    end
     @all_ratings = Movie.all_ratings
   end
 
